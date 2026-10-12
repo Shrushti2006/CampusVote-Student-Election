@@ -9,7 +9,7 @@ const AttendanceModel = require("./models/Attendance");
 const {
   MONGODB_URI,
   DB_NAME = "campusvote",
-  PORT = 3000,
+  PORT = 3000 ,
   ADMIN_USERNAME = "admin",   // only used to create the first admin account
   ADMIN_PASSWORD = "admin123", // only used to create the first admin account
   EMAIL_PROVIDER = "console",  // console | smtp
@@ -542,7 +542,7 @@ app.use("/api", (_req, res) => res.status(404).json({ error: "Not found." }));
     });
   }
   console.log(`Connected to MongoDB database "${DB_NAME}"`);
-  app.listen(PORT, () => console.log(`CampusVote running at http://localhost:${PORT}`));
+  app.listen(PORT, "0.0.0.0",() => console.log(`CampusVote running at http://localhost:${PORT}`));
 })().catch((err) => {
   console.error("Failed to start:", err.message);
   process.exit(1);
