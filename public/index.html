@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusVote | Student Election</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="CampusVote home"><span class="brand-mark">✓</span><span>Campus<span class="brand-light">Vote</span></span></a>
+    <span class="top-note"><span class="live-dot"></span> Student Election Portal</span>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">YOUR VOICE. YOUR CAMPUS.</p>
+        <h1>Every vote<br><span>moves us forward.</span></h1>
+        <p class="hero-copy">A simple, transparent way to choose your student leaders.</p>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="vote-card"><span class="vote-card-check">✓</span><div class="vote-lines"><i></i><i></i><i></i></div></div>
+        <div class="floating-star">✦</div><div class="floating-dot"></div>
+      </div>
+    </section>
+
+    <section class="app-card">
+      <aside class="side-panel">
+        <div class="side-icon">◎</div>
+        <h2>Welcome to<br>CampusVote</h2>
+        <p>Sign in to manage the election or cast your vote. Your participation matters.</p>
+        <div class="side-stats"><div><strong id="sidePosts">--</strong><span>Posts</span></div><div><strong>01</strong><span>Student · One vote</span></div></div>
+        <p class="side-foot">A demo interface for college elections</p>
+      </aside>
+
+      <div class="main-panel">
+        <div class="tabs" role="tablist" aria-label="Login type">
+          <button class="tab active" id="studentTab" type="button">Student login</button>
+          <button class="tab" id="adminTab" type="button">Admin login</button>
+        </div>
+
+        <div id="notice" class="notice hidden" role="status"></div>
+
+        <form id="studentForm" class="login-form">
+          <div class="form-heading"><h2>Cast your vote</h2><p>Enter your registered name, SY/TY, PRN and email. Your teacher must mark you present before voting.</p></div>
+          <label for="studentPasscode">Election passcode</label>
+          <input id="studentPasscode" autocomplete="off" placeholder="Enter passcode provided by admin" required />
+          <label for="studentName">Full name (as registered)</label>
+          <input id="studentName" autocomplete="name" placeholder="Enter your full name" required />
+          <label for="classYear">Class / year</label>
+          <select id="classYear" required><option value="">Select class/year</option><option value="SY">SY</option><option value="TY">TY</option></select>
+          <label for="prn">PRN number</label>
+          <input id="prn" autocomplete="username" placeholder="Enter your unique PRN" required />
+          <label for="email">Email address</label>
+          <input id="email" type="email" autocomplete="email" placeholder="you@college.edu" required />
+          <button class="primary-btn" id="sendOtpBtn" type="submit"><b>Send OTP</b> <span>→</span></button>
+          <p class="small-note"><span class="lock">▣</span> Only registered students marked present by a teacher can vote. Each PRN can vote once per election.</p>
+        </form>
+
+        <form id="otpForm" class="login-form hidden">
+          <div class="form-heading"><h2>Verify your email</h2><p id="otpInfo">Enter the 6-digit OTP sent to your email.</p></div>
+          <div id="devOtpNote" class="notice error hidden"></div>
+          <label for="otpCode">OTP</label>
+          <input id="otpCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="6-digit OTP" required />
+          <button class="primary-btn" id="verifyOtpBtn" type="submit"><b>Verify &amp; continue</b> <span>→</span></button>
+          <div class="otp-links"><button type="button" class="text-btn" id="resendOtp">Resend OTP</button><button type="button" class="text-btn" id="changeNumber">← Change email</button></div>
+        </form>
+
+        <form id="adminForm" class="login-form hidden">
+          <div class="form-heading"><h2>Admin sign in</h2><p>Manage election timing, passcode and results.</p></div>
+          <label for="adminUser">Username</label>
+          <input id="adminUser" autocomplete="username" placeholder="Enter admin username" required />
+          <label for="adminPassword">Password</label>
+          <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Enter admin password" required />
+          <button class="primary-btn" type="submit">Open dashboard <span>→</span></button>
+          <p class="small-note"><a href="/attendance.html">Open student register &amp; teacher attendance</a></p><p class="small-note">First start default: <b>admin</b> / <b>admin123</b> — change it from the dashboard.</p>
+        </form>
+      </div>
+    </section>
+
+    <section id="studentView" class="workspace hidden">
+      <div class="workspace-head"><div><p class="eyebrow">STUDENT BALLOT</p><h2>Choose your leaders</h2><p class="muted" id="studentElectionLabel"></p></div><button class="text-btn" id="studentLogout">Sign out ↗</button></div>
+      <div id="electionStatus" class="status-strip"></div>
+      <form id="ballotForm">
+        <div id="ballotPosts"></div>
+        <div class="submit-row"><p>Review your choices before submitting. You cannot vote again using the same PRN.</p><button class="primary-btn" id="submitVote" type="submit">Submit my vote <span>→</span></button></div>
+      </form>
+    </section>
+
+    <section id="adminView" class="workspace hidden">
+      <div class="workspace-head"><div><p class="eyebrow">CONTROL CENTER</p><h2>Admin dashboard</h2><p class="muted">Create elections, manage the voting window and review who voted for whom.</p></div><button class="text-btn" id="adminLogout">Sign out ↗</button></div>
+
+      <section class="content-card election-bar">
+        <div class="bar-row">
+          <div class="bar-select"><label for="electionSelect">Election</label><select id="electionSelect"></select></div>
+          <div class="bar-actions">
+            <button class="secondary-btn" id="newElectionBtn" type="button">+ New election</button>
+            <button class="secondary-btn" id="activateBtn" type="button">Make active</button>
+            <button class="danger-btn" id="deleteElectionBtn" type="button">Delete</button>
+          </div>
+        </div>
+        <p class="muted bar-note">Students vote in the <b>active</b> election only. Only one election is active at a time.</p>
+      </section>
+
+      <div class="dashboard-grid">
+        <div class="dash-card"><span class="dash-icon">◷</span><p>Election status</p><h3 id="adminStatus">Not configured</h3><span class="muted" id="adminTimeSummary">Set the voting window below</span></div>
+        <div class="dash-card"><span class="dash-icon">♙</span><p>Votes recorded</p><h3 id="voterCount">0</h3><span class="muted">One record per PRN, saved in MongoDB</span></div>
+        <div class="dash-card"><span class="dash-icon">▤</span><p>Open to students</p><h3 id="activeName" class="small-h">None</h3><span class="muted">Currently active election</span></div>
+      </div>
+
+      <div class="admin-columns">
+        <section class="content-card">
+          <div class="section-heading"><div><p class="eyebrow">SETTINGS</p><h3 id="formTitle">Election setup</h3></div><span class="mini-tag" id="formTag">Editing</span></div>
+          <form id="settingsForm">
+            <label for="electionName">Election name</label><input id="electionName" required placeholder="e.g. Student Council Election 2026" />
+            <div class="two-fields"><div><label for="startTime">Voting starts</label><input id="startTime" type="datetime-local" required /></div><div><label for="endTime">Voting ends</label><input id="endTime" type="datetime-local" required /></div></div>
+            <label for="electionCode">Student election passcode</label><input id="electionCode" required placeholder="Passcode students will enter" />
+            <div class="posts-head"><label>Posts &amp; candidates</label><button class="text-btn" id="addPostBtn" type="button">+ Add post</button></div>
+            <div id="postsEditor"></div>
+            <small>Add as many posts as you need (President, Secretary, Sports Secretary…). One candidate per line.</small>
+            <button class="primary-btn" id="saveElectionBtn" type="submit"><b id="saveLabel">Save election settings</b> <span>→</span></button>
+          </form>
+          <div class="warning-note"><b>Note</b><span>Posts and candidates are locked once the first vote is recorded, so results stay accurate. Start a new election for a different list.</span></div>
+        </section>
+        <section class="content-card results-card">
+          <div class="section-heading"><div><p class="eyebrow">LIVE TALLY</p><h3>Election results</h3></div><span class="mini-tag green-tag">Auto-count</span></div>
+          <p class="muted result-intro">Counts come straight from the database. Reveal results only after voting ends in a real election.</p>
+          <div id="resultsArea"></div>
+          <button class="secondary-btn" id="refreshResults" type="button">Refresh results ↻</button>
+        </section>
+      </div>
+
+      <section class="content-card records-card">
+        <div class="section-heading"><div><p class="eyebrow">DATABASE</p><h3>Voting records — who voted for whom</h3></div><button class="text-btn" id="downloadCsv" type="button">Download CSV ↓</button></div>
+        <div class="table-wrap"><table class="records-table"><thead id="recordsHead"></thead><tbody id="voteRecords"></tbody></table></div>
+      </section>
+
+      <section class="content-card records-card">
+        <div class="section-heading"><div><p class="eyebrow">DATABASE VIEWER</p><h3>MongoDB data <span id="dbName" class="muted"></span></h3></div><span class="mini-tag">Admin only</span></div>
+        <p class="muted result-intro">Only a signed-in admin can open this. Password hashes are never shown.</p>
+        <div class="db-tabs" id="dbTabs"></div>
+        <div class="table-wrap db-wrap"><table class="records-table"><thead id="dbHead"></thead><tbody id="dbBody"></tbody></table></div>
+      </section>
+
+      <section class="content-card records-card">
+        <div class="section-heading"><div><p class="eyebrow">ACCOUNT</p><h3>Change admin username / password</h3></div><span class="mini-tag">Admin</span></div>
+        <form id="accountForm" autocomplete="off">
+          <div class="two-fields">
+            <div><label for="newUsername">New username <small>(leave blank to keep)</small></label><input id="newUsername" placeholder="New username" autocomplete="off" /></div>
+            <div><label for="newPassword">New password <small>(leave blank to keep)</small></label><input id="newPassword" type="password" placeholder="At least 6 characters" autocomplete="new-password" /></div>
+          </div>
+          <label for="currentPassword">Current password</label><input id="currentPassword" type="password" required placeholder="Required to confirm the change" autocomplete="current-password" />
+          <button class="primary-btn" type="submit"><b>Update credentials</b> <span>→</span></button>
+        </form>
+      </section>
+    </section>
+
+    <footer><span>© 2026 CampusVote</span><span>Built for student participation <b>♥</b></span></footer>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
